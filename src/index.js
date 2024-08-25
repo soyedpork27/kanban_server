@@ -14,7 +14,22 @@ const app = express();
 app.use(express.json());
 
 // cors 허용
-app.use(cors());
+
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://kwskanban.netlify.app/'
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // 만약 요청의 출처가 허용된 출처 목록에 포함되어 있다면
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+}));
 
 // 정적 경로 설정
 app.use(express.static(path.join(__dirname, '../uploads')));
